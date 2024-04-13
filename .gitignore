@@ -1,0 +1,4 @@
+runner/
+*.aux
+*.log
+*.pdf
