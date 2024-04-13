@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     name: Publish Docker Image to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:bionic
 
     steps:
       - name: Checkout repository
@@ -25,3 +25,18 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push tythos/tinytex-alpine:v2024.04
+
+      - name: Get tag name
+          id: tag_name
+          run: echo "::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}"
+
+      - name: Create GitHub Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ steps.tag_name.outputs.TAG_NAME }}
+            release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
+            body: |
+              Describe the changes made in this release.
